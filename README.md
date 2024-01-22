@@ -5,8 +5,8 @@ Platformer made with pygame
 Project was created for learning purposes      
 
 ![game window](https://github.com/lmaqungo/Platformer/blob/main/img/game%20window.png?raw=true)
-## Windows Install    
----
+## Windows Install        
+
 1. Install Python interpreter  
 https://www.python.org/downloads/
 2. Install git  
