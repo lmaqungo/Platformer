@@ -15,11 +15,11 @@ SCREEN_HEIGHT = int(SCREEN_WIDTH * 0.8)
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Cyborg Shooter')
 
-# set frame rate
+# frame rate
 clock = pygame.time.Clock()
 FPS = 60
 
-# define game variables
+# game variables
 GRAVITY = 0.55
 
 ROWS = 20
@@ -35,43 +35,38 @@ SCROLL_THRESH = 100
 start_game = False
 start_intro = False
 
-
-# define player action variables
 moving_left = False
 moving_right = False
 shoot = False
 grenade = False
 grenade_thrown = False
 
-#load audio
-# bg music
-mixer.music.load("audio/music2.mp3")
-mixer.music.set_volume(0.3)
-# mixer.music.play(-1, 0.0, 5000)
+#audio
+
 jump_fx = mixer.Sound("audio/jump.wav")
 jump_fx.set_volume(0.5)
 shot_fx = mixer.Sound("audio/shot.wav")
 shot_fx.set_volume(0.5)
 grenade_fx = mixer.Sound("audio/grenade.wav")
 grenade_fx.set_volume(0.5)
-#load images
 
+#images
 #button images
 start_img = pygame.image.load('img/buttons/start_btn2.png').convert_alpha()
 exit_img = pygame.image.load('img/buttons/exit_btn2.png').convert_alpha()
 restart_img = pygame.image.load('img/buttons/restart_btn2.png').convert_alpha()
 
-#store tiles in a list
+#tile list
 img_list = []
 for x in range(TILE_TYPES):
     img = pygame.image.load(f'img/tile/{x}.png').convert_alpha()
     img = pygame.transform.scale(img, (TILE_SIZE, TILE_SIZE))
     img_list.append(img)
-#bullet
+
 bullet_img = pygame.image.load("img/icons/bullet.png").convert_alpha()
-#grenade
+
 grenade_img = pygame.image.load("img/icons/grenade.png").convert_alpha()
-#pick up boxes
+
 health_box_img = pygame.image.load("img/icons/health_box.png").convert_alpha()
 ammo_box_img = pygame.image.load("img/icons/ammo_box.png").convert_alpha()
 grenade_box_img = pygame.image.load("img/icons/grenade_box.png").convert_alpha()
@@ -83,7 +78,7 @@ item_boxes = {
               "Grenade" : grenade_box_img    
 }
 
-#define colours
+#colours
 BLACK = pygame.color.Color('black')
 RED = pygame.color.Color('red')
 WHITE = pygame.color.Color('white')
@@ -94,7 +89,7 @@ BLUE_WHITE = (195, 214, 213)
 PINK = (235, 65, 54)
 YELLOW = pygame.color.Color('yellow')
 
-#define font
+#font
 font = pygame.font.SysFont('Arial', 12)
 
 def draw_text(text, font, text_color, x, y):
@@ -113,7 +108,7 @@ def reset_level():
     water_group.empty()
     exit_group.empty()
     
-    #create empty tile list
+    #empty list
     data = []
     for row in range(ROWS):
         r = [-1] * COLS
@@ -121,7 +116,7 @@ def reset_level():
     return data
 
 class Soldier(pygame.sprite.Sprite):
-    # speed determines how many pixels character will move each time display updates
+   
     def __init__(self, char_type, x, y, scale, speed, ammo, grenades):
         pygame.sprite.Sprite.__init__(self)
         self.alive = True
@@ -142,13 +137,13 @@ class Soldier(pygame.sprite.Sprite):
         self.frame_index = 0
         self.action = 0
         self.update_time = pygame.time.get_ticks()
-        #ai specific variables
+        
         self.move_counter = 0
-        self.vision = pygame.Rect(0, 0, 100, 20) # view distance
+        self.vision = pygame.Rect(0, 0, 100, 20) # ai view distance
         self.idling = False
         self.idling_counter = 0
         
-        # load all images for players
+        # sprite images
         animation_types = ['Idle','Run', 'Jump', 'Death']
         for animation in animation_types:
             temp_list = []
@@ -169,7 +164,7 @@ class Soldier(pygame.sprite.Sprite):
         
         self.check_alive()
               
-        #update cooldown
+        
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
        
@@ -198,10 +193,10 @@ class Soldier(pygame.sprite.Sprite):
             self.jump = False
             self.in_air = True
             
-        # apply gravity
+        # gravity
         self.vel_y += GRAVITY
         if self.vel_y > 10:
-            self.vel_y = 10 # declaring a terminal gravtiy
+            self.vel_y = 10 # declaring a terminal gravity
         dy += self.vel_y
         
         #check collision 
@@ -209,19 +204,15 @@ class Soldier(pygame.sprite.Sprite):
             #check collision in x direction
             if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
                 dx = 0
-                # check if enemy has hit a wall and make it turn around
-                # if self.char_type == "enemy": this collision check also includes ground contact
-                #     self.direction *= -1
-                #     self.move_counter = 0
             #check collision in y direction
             if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
-                #check if below the ground, i.e. jumping
+                
                 
                 if self.vel_y < 0: 
                     self.vel_y = 0
                     dy = tile[1].bottom - self.rect.top
                 
-                #check if above the ground, i.e. falling
+                
                 elif self.vel_y >= 0: 
                     self.vel_y = 0
                     self.in_air = False
@@ -245,11 +236,10 @@ class Soldier(pygame.sprite.Sprite):
             if self.rect.left + dx < 0 or self.rect.right + dx > SCREEN_WIDTH:
                 dx = 0
                      
-        #update rectangle position  
+        
         self.rect.x += dx
         self.rect.y += dy
         
-        #update scroll based on player position
         if self.char_type == "player":
             if (self.rect.right > SCREEN_WIDTH - SCROLL_THRESH and bg_scroll < (world.level_length * TILE_SIZE) - SCREEN_WIDTH) \
             or (self.rect.left < SCROLL_THRESH and bg_scroll > abs(dx)):
@@ -265,7 +255,7 @@ class Soldier(pygame.sprite.Sprite):
             self.shoot_cooldown = 10
             bullet = Bullet(self.rect.centerx + (0.8 * self.rect.size[0] * self.direction),self.rect.centery, 0.75, self.direction)
             bullet_group.add(bullet)
-            # reduce ammo
+           
             self.ammo -= 1
             shot_fx.play()
             
@@ -291,7 +281,7 @@ class Soldier(pygame.sprite.Sprite):
                     self.update_action(1) # ai runs
                     self.move_counter += 1
                     #update ai vision as the enemy moves
-                    self.vision.center = (self.rect.centerx + 50 * self.direction, self.rect.centery) # 75 is half of vision rect
+                    self.vision.center = (self.rect.centerx + 50 * self.direction, self.rect.centery) 
                     
                     if self.move_counter > TILE_SIZE:
                         self.direction *= -1
@@ -301,17 +291,16 @@ class Soldier(pygame.sprite.Sprite):
                     if self.idling_counter<=0:
                         self.idling = False
             
-            # scroll
+          
             
         self.rect.x += screen_scroll
-        # elif self.alive == False and player.alive:
-        #     self.kill()
+     
             
     def update_animation(self):
         ANIMATION_COOLDOWN = 100
-        #update img depending on current frame
+        
         self.image = self.animation_list[self.action][self.frame_index]
-        # check if enough time has passed since the last update
+        
         if pygame.time.get_ticks() - self.update_time > ANIMATION_COOLDOWN:
             self.update_time = pygame.time.get_ticks()
             self.frame_index+=1
@@ -324,10 +313,10 @@ class Soldier(pygame.sprite.Sprite):
                 self.frame_index = 0
         
     def update_action(self, new_action):
-        # check if new action is different to the previous one
+        
         if new_action != self.action:
             self.action = new_action
-            # update the animation settings
+           
             self.frame_index = 0
             self.update_time = pygame.time.get_ticks()
             
@@ -341,8 +330,7 @@ class Soldier(pygame.sprite.Sprite):
     
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False) ,self.rect)
-        # if self.char_type == "player":
-        #     pygame.draw.rect(screen, RED, (self.rect.x, self.rect.y, self.width, self.height), 1)
+       
         
 class World():
     def __init__(self):
@@ -367,21 +355,21 @@ class World():
                     elif tile >= 11 and tile <= 14:
                         decoration = Decoration(img, x * TILE_SIZE, y * TILE_SIZE)
                         decoration_group.add(decoration)
-                    elif tile == 15: # create a player
+                    elif tile == 15: # make a player
                         player = Soldier("player", x * TILE_SIZE, y * TILE_SIZE, 1, 4 , 30, 5)
                         health_bar = HealthBar(10, 10, player.health, player.max_health)
-                    elif tile == 16:#create enemies
+                    elif tile == 16:#spawn enemies
                         enemy = Soldier("enemy", x * TILE_SIZE, y * TILE_SIZE, 1, 3, 30, 0)
                         enemy_group.add(enemy)
-                    elif tile == 17: # create ammo box
+                    elif tile == 17: # ammo box
                         item_box = ItemBox("Ammo", x * TILE_SIZE, y * TILE_SIZE, 0.5)
                         item_box_group.add(item_box)
                         
-                    elif tile == 19: # create ammo box
+                    elif tile == 19: #health box
                         item_box = ItemBox("Health", x * TILE_SIZE, y * TILE_SIZE, 0.5)
                         item_box_group.add(item_box)
                         
-                    elif tile == 18: # create ammo box
+                    elif tile == 18: #grenade box
                         item_box = ItemBox("Grenade", x * TILE_SIZE, y * TILE_SIZE, 0.5)
                         item_box_group.add(item_box)
                     elif tile == 20: #create exit
@@ -455,6 +443,7 @@ class ItemBox(pygame.sprite.Sprite):
                 player.grenades += 3
             #delete item box after collision
             self.kill()
+        # add audio here
                 
 class HealthBar():
     def __init__(self, x, y, health, max_health):
@@ -466,9 +455,8 @@ class HealthBar():
     def draw(self, health):
         # update with new health
         self.health = health
-        # pygame.draw.rect(screen, BLACK, (self.x, self.y, 150, 20))
         pygame.draw.rect(screen, RED, (self.x, self.y, 100, 10))
-        # ratio = health/max_health
+        # ratio = health/max_health for reducig/adding health
         ratio = self.health / self.max_health
         pygame.draw.rect(screen, GREEN, (self.x, self.y, 100 * ratio, 10))
         
@@ -496,7 +484,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.kill()
             
         # check collision with characters
-        # might have to change player collision with bullets as it is causing a bug. Code a manual system so we have more control
+        # might have to change player collision with bullets as it is causing a bug. Code a manual system so we have more control rather than relying of method
         if pygame.sprite.spritecollide(player, bullet_group, False):
             if player.alive:
                 player.health -= 5
@@ -657,7 +645,7 @@ for row in range(ROWS):
     r = [-1]* COLS
     world_data.append(r)
 
-# load in level data
+
 with open(f'Levels/level{level}_data.csv', newline ='') as csvfile:
             reader = csv.reader(csvfile, delimiter = ",")
             for x, row in enumerate(reader):
@@ -677,8 +665,7 @@ while run:
     clock.tick(FPS)
 
     
-    # fills the background so we dont see all the screen blittign every frame
-    # need to call it at the top otherwise it will cover the player. Function call order matters here
+   
     if start_game == False:
         #main menu
         screen.fill(BLUE)
@@ -696,8 +683,8 @@ while run:
         #show player health_bar 
         health_bar.draw(player.health)
         
-        #ammo display
-        #show ammo
+        #hud
+        #display ammo and grenade count
         draw_text('AMMO:', font, YELLOW, 10, 45)
         bullet_img_resized = pygame.transform.scale(bullet_img,(int(bullet_img.get_width() * 0.6), int(bullet_img.get_height() * 0.6)) )
         for i in range(player.ammo):
@@ -800,13 +787,10 @@ while run:
                     player, health_bar = world.process_data(world_data)
         
         
-        # keyboard input is an event
     
     for event in pygame.event.get():
-        # quit
         if event.type == pygame.QUIT:
             run = False
-        # key pressed down   
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_a:
                 moving_left = True
@@ -822,7 +806,6 @@ while run:
             if event.key == pygame.K_ESCAPE:
                 run = False
         
-        # key released   
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_a:
                 moving_left = False
@@ -836,7 +819,6 @@ while run:
             
             
     pygame.display.update()
-    # setting frame rate lock is important so that cpu doesnt just compute everything as fast as it can
             
 pygame.quit()
 
