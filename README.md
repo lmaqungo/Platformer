@@ -2,14 +2,15 @@
 
 
 Platformer made with pygame   
-Project was created for learning purposes   
+Project was created for learning purposes      
 
-#### Windows Install   
-
+![game window](https://github.com/lmaqungo/Platformer/blob/main/img/game%20window.png?raw=true)
+## Windows Install    
+---
 1. Install Python interpreter  
-[https://www.python.org/downloads/]
+https://www.python.org/downloads/
 2. Install git  
-[https://git-scm.com/download/win]
+https://git-scm.com/download/win
 3. Install Pygame - requires Python  
 Run command in git-bash or cmd after you've installed Python:
 ```bash
