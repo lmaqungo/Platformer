@@ -35,11 +35,7 @@ scroll_speed = 1
 save_button_img = pygame.image.load('img/save_btn.png')
 load_button_img = pygame.image.load('img/load_btn.png')
 
-#load images
-pine1_img = pygame.image.load('img/background/pine1.png').convert_alpha()
-pine2_img = pygame.image.load('img/background/pine2.png').convert_alpha()
-mountain_img = pygame.image.load('img/background/mountain.png').convert_alpha()
-sky_img = pygame.image.load('img/background/sky_cloud.png').convert_alpha()
+
 # store tiles in list
 
 img_list = []
@@ -131,7 +127,7 @@ while run:
             for row in world_data:
                 writer.writerow(row)
                 
-        print("Level saved")
+        print(f"Level {level} saved")
                 
     if load_button.draw(screen):
         
@@ -192,7 +188,7 @@ while run:
                 scroll_speed = 5
             if event.key == pygame.K_UP:
                 level +=1
-            if event.key == pygame.K_DOWN and level > 0:
+            if event.key == pygame.K_DOWN and level > 1:
                 level -=1
                 
                 
