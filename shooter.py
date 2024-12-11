@@ -676,6 +676,8 @@ try:
                 for x, row in enumerate(reader):
                     for y, tile1 in enumerate(row):
                         world_data[x][y] = int(tile1) 
+                        
+    
 except FileNotFoundError:
     print("You need to create levels first")
                      
@@ -805,6 +807,7 @@ while run:
                              
         else:
             screen_scroll = 0
+            main_music.stop()
             if death_fade.fade():
                 
                 if restart_button.draw(screen):
@@ -820,6 +823,7 @@ while run:
                         
                     world = World()
                     player, health_bar = world.process_data(world_data)
+                    main_music_started = False
         
         
         # keyboard input is an event
