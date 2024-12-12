@@ -1,7 +1,22 @@
+
+"""
+Module Name: button.py
+
+Purpose: This simple module includes a class to create buttons for pygame projects
+"""
+
 import pygame
 
-#button class
 class Button():
+    """
+    Represents a button object
+    
+    Attributes:
+        image (pygame.Surface): The image of the button
+        rect (pygame.Rect): Rectangle for the image, used for positioning
+        clicked (bool): click status of the button
+        
+    """
     def __init__(self, x, y, image, scale):
         width = image.get_width()
         height = image.get_height()
@@ -13,10 +28,10 @@ class Button():
     def draw(self, surface):
         action = False
         
-        #get mouse pos
+        # get mouse pos
         pos = pygame.mouse.get_pos()
         
-        #check mouse collide and clicked
+        # check mouse collide and clicked
         if self.rect.collidepoint(pos):
             if pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
                 self.clicked = True
