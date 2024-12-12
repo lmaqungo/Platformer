@@ -812,6 +812,7 @@ while run:
                                 world_data[x][y] = int(tile1) 
                         
                     world = World()
+                    screen_scroll, level_complete = player.move(moving_left, moving_right)
                     player, health_bar = world.process_data(world_data)
                     main_music_started = False
         
