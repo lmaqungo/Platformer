@@ -60,7 +60,6 @@ hurt_fx.set_volume(0.5)
 health_pickup_fx = mixer.Sound("audio/health-pickup.wav")
 health_pickup_fx.set_volume(0.5)
 
-#load images
 
 #button images
 start_img = pygame.image.load('img/start_btn2.png').convert_alpha()
@@ -217,11 +216,7 @@ class Soldier(pygame.sprite.Sprite):
             #check collision in x direction
             if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
                 dx = 0
-                # check if enemy has hit a wall and make it turn around
-                # if self.char_type == "enemy": this collision check also includes ground contact
-                #     self.direction *= -1
-                #     self.move_counter = 0
-            #check collision in y direction
+                
             if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
                 #check if below the ground, i.e. jumping
                 
@@ -286,7 +281,7 @@ class Soldier(pygame.sprite.Sprite):
                 # check if ai is near the player
             if self.vision.colliderect(player.rect):
                 #stop running and face player
-                self.update_action(0) # 0 is idle
+                self.update_action(0) 
                 self.shoot()
             else:
                 if self.idling == False:
@@ -309,11 +304,9 @@ class Soldier(pygame.sprite.Sprite):
                     if self.idling_counter<=0:
                         self.idling = False
             
-            # scroll
             
         self.rect.x += screen_scroll
-        # elif self.alive == False and player.alive:
-        #     self.kill()
+
             
     def update_animation(self):
         ANIMATION_COOLDOWN = 100
@@ -349,8 +342,6 @@ class Soldier(pygame.sprite.Sprite):
     
     def draw(self):
         screen.blit(pygame.transform.flip(self.image, self.flip, False) ,self.rect)
-        # if self.char_type == "player":
-        #     pygame.draw.rect(screen, RED, (self.rect.x, self.rect.y, self.width, self.height), 1)
         
 class World():
     def __init__(self):
@@ -477,9 +468,9 @@ class HealthBar():
     def draw(self, health):
         # update with new health
         self.health = health
-        # pygame.draw.rect(screen, BLACK, (self.x, self.y, 150, 20))
+    
         pygame.draw.rect(screen, RED, (self.x, self.y, 100, 10))
-        # ratio = health/max_health
+   
         ratio = self.health / self.max_health
         pygame.draw.rect(screen, GREEN, (self.x, self.y, 100 * ratio, 10))
         
@@ -694,8 +685,7 @@ while run:
     clock.tick(FPS)
 
     
-    # fills the background so we dont see all the screen blittign every frame
-    # need to call it at the top otherwise it will cover the player. Function call order matters here
+    # need to fill the screen every frame so we dont see the stuff from the previous frames. 
     if start_game == False:
         #main menu
         screen.fill(BLUE)
