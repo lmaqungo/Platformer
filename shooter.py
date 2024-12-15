@@ -265,7 +265,8 @@ class Soldier(pygame.sprite.Sprite):
         
     def shoot(self):
         if self.shoot_cooldown == 0 and self.ammo > 0:
-            self.shoot_cooldown = 10
+            self.shoot_cooldown = 20
+            # add shoot animation using update_animation
             bullet = Bullet(self.rect.centerx + (0.8 * self.rect.size[0] * self.direction),self.rect.centery, 0.75, self.direction)
             bullet_group.add(bullet)
             # reduce ammo
@@ -317,7 +318,7 @@ class Soldier(pygame.sprite.Sprite):
             self.update_time = pygame.time.get_ticks()
             self.frame_index+=1
             
-        # if the animation has run out, the reset back to the start
+        # if the animation has run out, then reset back to the start
         if self.frame_index >= len(self.animation_list[self.action]):
             if self.action == 3:
                 self.frame_index = len(self.animation_list[self.action]) - 1
